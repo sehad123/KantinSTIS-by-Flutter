@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kantin_stis/Screens/User/EditUserScreen.dart';
+import 'package:kantin_stis/Screens/Admin/Crud/DetailProductScreen.dart';
+import 'package:kantin_stis/Screens/User/ProfileUserScreen.dart';
 import 'package:kantin_stis/Screens/User/Produk/DataProdukScreen.dart';
 import 'package:kantin_stis/Screens/Admin/Crud/EditProdukScreen.dart';
 import 'package:kantin_stis/Screens/Admin/Crud/InputScreen.dart';
@@ -27,10 +28,9 @@ final Map<String, WidgetBuilder> routes = {
   DataProdukScreen.routeName: (context) => DataProdukScreen(),
   TransaksiScreen.routeName: (context) => TransaksiScreen(),
   DataTransaksiScreen.routeName: (context) => DataTransaksiScreen(),
-  EditUserScreen.routeName: (context) => EditUserScreen(),
   UserByIdScreen.routeName: (context) => UserByIdScreen(),
+  DetailProductScreen.routeName: (context) => DetailProductScreen(),
+  ProfileUserScreen.routeName: (context) => ProfileUserScreen(),
   UploadBuktiPembayaranScreen.routeName: (context) =>
       UploadBuktiPembayaranScreen(),
-
-  // Transaksi
 };

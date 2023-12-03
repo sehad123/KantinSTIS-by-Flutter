@@ -234,11 +234,11 @@ class _HomesUserComponent extends State<HomeUserComponent> {
                         ),
                 ],
               ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right,
-                color: mTitleColor,
-                size: 30.0,
-              ),
+              // trailing: Icon(
+              //   Icons.keyboard_arrow_right,
+              //   color: mTitleColor,
+              //   size: 30.0,
+              // ),
             ),
           ),
         ),

@@ -9,7 +9,7 @@ class UploadBuktiPembayaranScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    // dataProduk = ModalRoute.of(context)!.settings.arguments as Map;
+    dataTransaksi = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

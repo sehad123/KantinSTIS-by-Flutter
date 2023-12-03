@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:kantin_stis/Components/User/HomeUserComponent.dart';
 import 'package:kantin_stis/Screens/Login/LoginScreens.dart';
+import 'package:kantin_stis/Screens/User/ProfileUserScreen.dart';
 import 'package:kantin_stis/Utils/constants.dart';
 import 'package:kantin_stis/size_config.dart';
 
@@ -26,7 +27,10 @@ class UserScreen extends StatelessWidget {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, ProfileUserScreen.routeName,
+                  arguments: dataUserLogin);
+            },
             child: Icon(
               Icons.person,
               color: mTitleColor,

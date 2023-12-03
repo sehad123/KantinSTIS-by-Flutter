@@ -18,7 +18,6 @@ class _ProdukComponentState extends State<ProdukComponent> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getDataProduk();
   }
@@ -26,30 +25,22 @@ class _ProdukComponentState extends State<ProdukComponent> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: SizedBox(
-      width: double.infinity,
       child: Padding(
         padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenHeight(20)),
-        child: SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dataProduk == null ? 0 : dataProduk.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return cardProduk(dataProduk[index]);
-                  // return cardProduk();
-                },
-              ),
-            )
-          ],
-        )),
+            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+          ),
+          itemCount: dataProduk == null ? 0 : dataProduk.length,
+          itemBuilder: (BuildContext context, int index) {
+            return cardProduk(dataProduk[index]);
+          },
+        ),
       ),
-    ));
+    );
   }
 
   Widget cardProduk(data) {
@@ -60,52 +51,49 @@ class _ProdukComponentState extends State<ProdukComponent> {
       },
       child: Card(
         elevation: 10.0,
-        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-        child: Container(
-          decoration: BoxDecoration(color: Color.fromARGB(255, 255, 255, 255)),
-          child: Container(
-            child: ListTile(
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-              leading: Container(
-                padding: EdgeInsets.only(right: 12.0),
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(width: 1.0, color: Colors.white24))),
-                child: Image.network('$baseUrl/${data['gambar']}'),
-              ),
-              title: Text(
-                "${data['nama']} ",
-                style:
-                    TextStyle(color: mTitleColor, fontWeight: FontWeight.bold),
-              ),
-              subtitle: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${data['tipe']} ",
-                    style: TextStyle(
-                        color: mTitleColor, fontWeight: FontWeight.bold),
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Container(
+                    height: 100,
+                    child: Image.network('$baseUrl/${data['gambar']}'),
                   ),
-                  Text(
-                    "Rp ${data['harga']} ",
-                    style: TextStyle(
-                        color: mTitleColor, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "${data['merk']} ",
-                    style: TextStyle(
-                        color: mTitleColor, fontWeight: FontWeight.bold),
-                  )
-                ],
+                ),
               ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right,
-                color: mTitleColor,
-                size: 30.0,
+              SizedBox(height: 10),
+              Center(
+                child: Text(
+                  "${data['nama']} ",
+                  style: TextStyle(
+                      color: mTitleColor, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
+              Center(
+                child: Text(
+                  "${data['tipe']} ",
+                  style: TextStyle(
+                      color: mTitleColor, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Center(
+                child: Text(
+                  "Rp ${data['harga']} ",
+                  style: TextStyle(
+                      color: mTitleColor, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Center(
+                child: Text(
+                  "${data['merk']} ",
+                  style: TextStyle(
+                      color: mTitleColor, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         ),
       ),

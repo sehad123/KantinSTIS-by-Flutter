@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:kantin_stis/API/configAPI.dart';
+import 'package:kantin_stis/Screens/Admin/Crud/DetailProductScreen.dart';
 import 'package:kantin_stis/Screens/Admin/Crud/EditProdukScreen.dart';
 import 'package:kantin_stis/Screens/Admin/HomeAdminScreen.dart';
 import 'package:kantin_stis/Utils/constants.dart';
@@ -98,6 +99,9 @@ class _AdminComponent extends State<AdminComponent> {
                   ],
                 ),
               ),
+              SizedBox(
+                width: getProportionateScreenWidth(10),
+              ),
               GestureDetector(
                 onTap: () {
                   AwesomeDialog(
@@ -133,10 +137,16 @@ class _AdminComponent extends State<AdminComponent> {
               )
             ],
           ),
-          trailing: Icon(
-            Icons.keyboard_arrow_right,
-            color: mTitleColor,
-            size: 30.0,
+          trailing: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, DetailProductScreen.routeName,
+                  arguments: data);
+            },
+            child: Icon(
+              Icons.keyboard_arrow_right,
+              color: mTitleColor,
+              size: 30.0,
+            ),
           ),
         ),
       ),

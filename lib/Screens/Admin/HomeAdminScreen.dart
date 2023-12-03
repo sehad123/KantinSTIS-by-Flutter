@@ -16,7 +16,7 @@ class HomeAdminScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
-          "KANTIN STIS",
+          "Halaman Admin ",
           style: TextStyle(color: mTitleColor, fontWeight: FontWeight.bold),
         ),
         automaticallyImplyLeading: false,
