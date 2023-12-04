@@ -2,24 +2,24 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:kantin_stis/API/configAPI.dart';
-import 'package:kantin_stis/Screens/User/Transaksi/UploadBuktiBayar.dart';
 import 'package:kantin_stis/Screens/User/UserScreen.dart';
 import 'package:kantin_stis/Utils/constants.dart';
 import 'package:kantin_stis/size_config.dart';
 
-class DataTransaksiComponent extends StatefulWidget {
+class DataTransaksiComponentBerhasil extends StatefulWidget {
   @override
-  State<DataTransaksiComponent> createState() => _DataTransaksiComponentState();
+  State<DataTransaksiComponentBerhasil> createState() =>
+      _DataTransaksiComponentBerhasilState();
 }
 
-class _DataTransaksiComponentState extends State<DataTransaksiComponent> {
+class _DataTransaksiComponentBerhasilState
+    extends State<DataTransaksiComponentBerhasil> {
   Response? response;
   var dio = Dio();
   var dataTransaksi;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getDataTransaksi();
   }
@@ -27,40 +27,40 @@ class _DataTransaksiComponentState extends State<DataTransaksiComponent> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenHeight(20)),
-        child: SingleChildScrollView(
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: getProportionateScreenWidth(20),
+          ),
+          child: SingleChildScrollView(
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dataTransaksi == null ? 0 : dataTransaksi.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return cardTransaksi(dataTransaksi[index]);
-                  // return cardTransaksi();
-                },
-              ),
-            )
-          ],
-        )),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: dataTransaksi == null
+                      ? CircularProgressIndicator() // Placeholder for loading indicator
+                      : ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: dataTransaksi.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return cardTransaksi(dataTransaksi[index]);
+                          },
+                        ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-    ));
+    );
   }
 
   Widget cardTransaksi(data) {
-    return data['buktiPembayaran'] == null
+    return data['buktiPembayaran'] != null
         ? GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(
-                  context, UploadBuktiPembayaranScreen.routeName,
-                  arguments: data);
-            },
+            onTap: () {},
             child: Card(
               elevation: 10.0,
               margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
@@ -115,18 +115,13 @@ class _DataTransaksiComponentState extends State<DataTransaksiComponent> {
                         ),
                       ),
                       Text(
-                        "Pending ",
+                        "Berhasil ",
                         style: TextStyle(
-                          color: Colors.orange,
+                          color: kPrimaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
-                  ),
-                  trailing: Icon(
-                    Icons.keyboard_arrow_right,
-                    color: mTitleColor,
-                    size: 30.0,
                   ),
                 ),
               ),
@@ -157,7 +152,7 @@ class _DataTransaksiComponentState extends State<DataTransaksiComponent> {
           animType: AnimType.rightSlide,
           dialogType: DialogType.error,
           title: 'Peringatan',
-          desc: ' produk tidak ditemukan',
+          desc: 'Produk tidak ditemukan',
           btnOkOnPress: () {},
         ).show();
       }

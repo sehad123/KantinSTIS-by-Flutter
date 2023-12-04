@@ -60,7 +60,11 @@ class _ProdukComponentState extends State<ProdukComponent> {
                 child: Center(
                   child: Container(
                     height: 100,
-                    child: Image.network('$baseUrl/${data['gambar']}'),
+                    child: Image.network(
+                      '$baseUrl/${data['gambar']}',
+                      height: 150,
+                      width: 130,
+                    ),
                   ),
                 ),
               ),
@@ -69,30 +73,32 @@ class _ProdukComponentState extends State<ProdukComponent> {
                 child: Text(
                   "${data['nama']} ",
                   style: TextStyle(
-                      color: mTitleColor, fontWeight: FontWeight.bold),
+                      color: mTitleColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
                 ),
               ),
               Center(
                 child: Text(
-                  "${data['tipe']} ",
+                  "Stock : ${data['qty']} ",
                   style: TextStyle(
                       color: mTitleColor, fontWeight: FontWeight.bold),
                 ),
               ),
               Center(
                 child: Text(
-                  "Rp ${data['harga']} ",
+                  "Harga : Rp ${data['harga']} ",
                   style: TextStyle(
                       color: mTitleColor, fontWeight: FontWeight.bold),
                 ),
               ),
-              Center(
-                child: Text(
-                  "${data['merk']} ",
-                  style: TextStyle(
-                      color: mTitleColor, fontWeight: FontWeight.bold),
-                ),
-              ),
+              // Center(
+              //   child: Text(
+              //     "Deskripsi : ${data['deskripsi']} ",
+              //     style: TextStyle(
+              //         color: mTitleColor, fontWeight: FontWeight.bold),
+              //   ),
+              // ),
             ],
           ),
         ),

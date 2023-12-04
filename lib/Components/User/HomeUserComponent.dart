@@ -28,49 +28,47 @@ class _HomesUserComponent extends State<HomeUserComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenHeight(20)),
-        child: SingleChildScrollView(
+    return Scaffold(
+      body: ListView(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenHeight(20),
+              vertical: getProportionateScreenHeight(10),
+            ),
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                "Layanan",
-                style: mTitleStyle,
-              ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "Layanan",
+                    style: mTitleStyle,
+                  ),
+                ),
+                menuLayanan(),
+                SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "Data Transaksi Anda",
+                    style: mTitleStyle,
+                  ),
+                ),
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: dataTransaksi == null ? 0 : dataTransaksi.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return cardTransaksi(dataTransaksi[index]);
+                  },
+                ),
+              ],
             ),
-            menuLayanan(),
-            SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                "Data Transaksi Anda",
-                style: mTitleStyle,
-              ),
-            ),
-            Container(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dataTransaksi == null ? 0 : dataTransaksi.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return cardTransaksi(dataTransaksi[index]);
-                  // return cardTransaksi();
-                },
-              ),
-            )
-          ],
-        )),
+          ),
+        ],
       ),
-    ));
+    );
   }
 
   Widget menuLayanan() {
@@ -234,11 +232,6 @@ class _HomesUserComponent extends State<HomeUserComponent> {
                         ),
                 ],
               ),
-              // trailing: Icon(
-              //   Icons.keyboard_arrow_right,
-              //   color: mTitleColor,
-              //   size: 30.0,
-              // ),
             ),
           ),
         ),

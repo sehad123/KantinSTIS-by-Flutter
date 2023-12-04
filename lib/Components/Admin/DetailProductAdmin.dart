@@ -80,6 +80,29 @@ class _DetailProductAdminState extends State<DetailProductAdmin> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
+                "Stock Produk",
+                style: mTitleStyle,
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "${DetailProductScreen.dataProduk['qty']}",
+              )
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10, top: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 "Tipe Produk",
                 style: mTitleStyle,
               )
@@ -115,7 +138,7 @@ class _DetailProductAdminState extends State<DetailProductAdmin> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "${DetailProductScreen.dataProduk['merk']}",
+                "${DetailProductScreen.dataProduk['deskripsi']}",
               )
             ],
           ),

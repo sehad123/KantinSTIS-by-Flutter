@@ -22,8 +22,10 @@ class _FormEditProduk extends State<FormEditProduk> {
           TextEditingController(text: '${EditScreen.dataProduk['tipe']}'),
       txtHargaProduk =
           TextEditingController(text: '${EditScreen.dataProduk['harga']}'),
+      txtQtyProduk =
+          TextEditingController(text: '${EditScreen.dataProduk['qty']}'),
       txtDeskripsiProduk =
-          TextEditingController(text: '${EditScreen.dataProduk['merk']}');
+          TextEditingController(text: '${EditScreen.dataProduk['deskripsi']}');
 
   FocusNode focusNode = new FocusNode();
   File? image;
@@ -52,6 +54,8 @@ class _FormEditProduk extends State<FormEditProduk> {
           buildTipeProduk(),
           SizedBox(height: 30),
           buildHargaProduk(),
+          SizedBox(height: 30),
+          buildQtyProduk(),
           SizedBox(height: 30),
           builDeskripsiProduk(),
           SizedBox(height: 30),
@@ -112,8 +116,7 @@ class _FormEditProduk extends State<FormEditProduk> {
                     desc: 'tipe produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
-                }
-                if (txtHargaProduk.text == '') {
+                } else if (txtHargaProduk.text == '') {
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -122,8 +125,7 @@ class _FormEditProduk extends State<FormEditProduk> {
                     desc: 'harga produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
-                }
-                if (txtDeskripsiProduk.text == '') {
+                } else if (txtDeskripsiProduk.text == '') {
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -132,11 +134,21 @@ class _FormEditProduk extends State<FormEditProduk> {
                     desc: 'deskripsi produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
+                } else if (txtQtyProduk.text == '') {
+                  AwesomeDialog(
+                    context: context,
+                    animType: AnimType.rightSlide,
+                    dialogType: DialogType.error,
+                    title: 'Peringatan',
+                    desc: 'stock produk tidak boleh kosong',
+                    btnOkOnPress: () {},
+                  ).show();
                 } else {
                   EditData(
                       txtNamaProduk.text,
                       txtTipeProduk.text,
                       txtHargaProduk.text,
+                      txtQtyProduk.text,
                       txtDeskripsiProduk.text,
                       image?.path);
                 }
@@ -202,6 +214,21 @@ class _FormEditProduk extends State<FormEditProduk> {
     );
   }
 
+  TextFormField buildQtyProduk() {
+    return TextFormField(
+      controller: txtQtyProduk,
+      keyboardType: TextInputType.number,
+      style: mTitleStyle,
+      decoration: InputDecoration(
+          labelText: 'Stock Produk',
+          hintText: 'Masukkan Stock produk anda',
+          labelStyle: TextStyle(
+              color: focusNode.hasFocus ? mSubtitleColor : kPrimaryColor),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: Icon(Icons.production_quantity_limits)),
+    );
+  }
+
   TextFormField builDeskripsiProduk() {
     return TextFormField(
       controller: txtDeskripsiProduk,
@@ -217,7 +244,7 @@ class _FormEditProduk extends State<FormEditProduk> {
     );
   }
 
-  void EditData(nama, tipe, harga, deskripsi, gambar) async {
+  void EditData(nama, tipe, harga, qty, deskripsi, gambar) async {
     bool status;
     var msg;
     try {
@@ -225,7 +252,8 @@ class _FormEditProduk extends State<FormEditProduk> {
         'nama': nama,
         'tipe': tipe,
         'harga': harga,
-        'merk': deskripsi,
+        'qty': qty,
+        'deskripsi': deskripsi,
         'gambar': image == null ? '' : await MultipartFile.fromFile(gambar),
       });
       response = await dio.put('$urlEdit/${EditScreen.dataProduk['_id']}',

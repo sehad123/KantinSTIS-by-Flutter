@@ -18,6 +18,7 @@ class _FormInputProduk extends State<FormInputProduk> {
   TextEditingController txtNamaProduk = TextEditingController(),
       txtTipeProduk = TextEditingController(),
       txtHargaProduk = TextEditingController(),
+      txtQtyProduk = TextEditingController(),
       txtDeskripsiProduk = TextEditingController();
 
   FocusNode focusNode = new FocusNode();
@@ -47,6 +48,8 @@ class _FormInputProduk extends State<FormInputProduk> {
           buildTipeProduk(),
           SizedBox(height: 30),
           buildHargaProduk(),
+          SizedBox(height: 30),
+          buildQtyProduk(),
           SizedBox(height: 30),
           builDeskripsiProduk(),
           SizedBox(height: 30),
@@ -104,8 +107,7 @@ class _FormInputProduk extends State<FormInputProduk> {
                     desc: 'tipe produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
-                }
-                if (txtHargaProduk.text == '') {
+                } else if (txtHargaProduk.text == '') {
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -114,8 +116,16 @@ class _FormInputProduk extends State<FormInputProduk> {
                     desc: 'harga produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
-                }
-                if (txtDeskripsiProduk.text == '') {
+                } else if (txtQtyProduk.text == '') {
+                  AwesomeDialog(
+                    context: context,
+                    animType: AnimType.rightSlide,
+                    dialogType: DialogType.error,
+                    title: 'Peringatan',
+                    desc: 'stock produk tidak boleh kosong',
+                    btnOkOnPress: () {},
+                  ).show();
+                } else if (txtDeskripsiProduk.text == '') {
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -129,6 +139,7 @@ class _FormInputProduk extends State<FormInputProduk> {
                       txtNamaProduk.text,
                       txtTipeProduk.text,
                       txtHargaProduk.text,
+                      txtQtyProduk.text,
                       txtDeskripsiProduk.text,
                       image?.path);
                 }
@@ -194,6 +205,21 @@ class _FormInputProduk extends State<FormInputProduk> {
     );
   }
 
+  TextFormField buildQtyProduk() {
+    return TextFormField(
+      controller: txtQtyProduk,
+      keyboardType: TextInputType.number,
+      style: mTitleStyle,
+      decoration: InputDecoration(
+          labelText: 'Stock Produk',
+          hintText: 'Masukkan Stock produk anda',
+          labelStyle: TextStyle(
+              color: focusNode.hasFocus ? mSubtitleColor : kPrimaryColor),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          suffixIcon: Icon(Icons.production_quantity_limits)),
+    );
+  }
+
   TextFormField builDeskripsiProduk() {
     return TextFormField(
       controller: txtDeskripsiProduk,
@@ -209,7 +235,7 @@ class _FormInputProduk extends State<FormInputProduk> {
     );
   }
 
-  void inputData(nama, tipe, harga, deskripsi, gambar) async {
+  void inputData(nama, tipe, harga, qty, deskripsi, gambar) async {
     bool status;
     var msg;
     try {
@@ -217,7 +243,8 @@ class _FormInputProduk extends State<FormInputProduk> {
         'nama': nama,
         'tipe': tipe,
         'harga': harga,
-        'merk': deskripsi,
+        'qty': qty,
+        'deskripsi': deskripsi,
         'gambar': await MultipartFile.fromFile(gambar),
       });
       response = await dio.post(urlCreate, data: formData);

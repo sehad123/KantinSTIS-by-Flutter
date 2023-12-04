@@ -7,6 +7,7 @@ import 'package:kantin_stis/Screens/Admin/Crud/InputScreen.dart';
 import 'package:kantin_stis/Screens/Login/LoginScreens.dart';
 import 'package:kantin_stis/Screens/Register/Registrasi.dart';
 import 'package:kantin_stis/Screens/Admin/HomeAdminScreen.dart';
+import 'package:kantin_stis/Screens/User/Transaksi/DataTransaksiBerhasil.dart';
 import 'package:kantin_stis/Screens/User/Transaksi/DataTransaksiUser.dart';
 import 'package:kantin_stis/Screens/User/Transaksi/TransaksiScreen.dart';
 import 'package:kantin_stis/Screens/User/Transaksi/UploadBuktiBayar.dart';
@@ -27,6 +28,7 @@ final Map<String, WidgetBuilder> routes = {
   UserScreen.routeName: (context) => UserScreen(),
   DataProdukScreen.routeName: (context) => DataProdukScreen(),
   TransaksiScreen.routeName: (context) => TransaksiScreen(),
+  DataTransaksiBerhasil.routeName: (context) => DataTransaksiBerhasil(),
   DataTransaksiScreen.routeName: (context) => DataTransaksiScreen(),
   UserByIdScreen.routeName: (context) => UserByIdScreen(),
   DetailProductScreen.routeName: (context) => DetailProductScreen(),
