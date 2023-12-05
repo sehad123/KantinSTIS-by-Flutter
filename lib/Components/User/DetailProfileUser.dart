@@ -35,9 +35,11 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
 
   Response? response;
   var dio = Dio();
+  static var dataUserLogin;
 
   @override
   Widget build(BuildContext context) {
+    dataUserLogin = ModalRoute.of(context)!.settings.arguments as Map;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -186,12 +188,21 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
         AwesomeDialog(
           context: context,
           animType: AnimType.rightSlide,
-          dialogType: DialogType.success,
+          dialogType: DialogType.info,
           title: 'Peringatan',
-          desc: 'Gambar Berhasil diupload => $msg',
+          desc: 'Yakin Ingin upload foto',
+          btnCancelOnPress: () {},
+          btnCancelText: 'Tidak',
+          btnOkText: 'Yakin',
           btnOkOnPress: () {
-            // Navigator.pushNamed(context, UserScreen.routeName,
-            //     arguments: UserScreen.dataUserLogin);
+            AwesomeDialog(
+              context: context,
+              animType: AnimType.rightSlide,
+              dialogType: DialogType.success,
+              title: 'Peringatan',
+              desc: 'Gambar Berhasil diupload',
+              btnOkOnPress: () {},
+            ).show();
           },
         ).show();
       } else {
@@ -488,7 +499,7 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
                     animType: AnimType.rightSlide,
                     dialogType: DialogType.error,
                     title: 'Peringatan',
-                    desc: 'Saldo berhasil ditambahkan',
+                    desc: 'Saldo berhasil ditambahkan !!!',
                     btnOkOnPress: () {},
                   ).show();
                   Navigator.pop(context, success);
@@ -519,36 +530,36 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
 
           if (status) {
             print(msg);
-            // Tambahkan dialog atau logika sukses di sini
+            // Perbarui data saldo pada variabel ProfileUserScreen.data_user setelah penambahan saldo
+            ProfileUserScreen.data_user['saldo'] += addedBalance;
+
+            // Tampilkan informasi saldo yang terbaru pada modal informasi saldo
+            _showBalanceInfoModal(context);
+
+            // Tampilkan pesan sukses atau dialog sukses di sini
+            AwesomeDialog(
+              context: context,
+              animType: AnimType.rightSlide,
+              dialogType: DialogType.success,
+              title: 'Peringatan',
+              desc: 'Saldo berhasil ditambahkan $msg',
+              btnOkOnPress: () {},
+            ).show();
+
+            // Kembalikan nilai true untuk menandakan penambahan saldo berhasil
+            return true;
+          } else {
+            // Tampilkan pesan error atau dialog error di sini jika penambahan saldo gagal
             AwesomeDialog(
               context: context,
               animType: AnimType.rightSlide,
               dialogType: DialogType.error,
               title: 'Peringatan',
-              desc: 'Saldo berhasil ditambahkan $msg',
+              desc: 'Saldo gagal ditambahkan $msg',
               btnOkOnPress: () {},
             ).show();
-            return true;
-          } else {
-            AwesomeDialog(
-              context: context,
-              animType: AnimType.rightSlide,
-              dialogType: DialogType.success,
-              title: 'Peringgatan',
-              desc: 'Saldo berhasil ditambahkan ',
-              btnOkOnPress: () {
-                Navigator.pop(context);
-              },
-            ).show();
-            // Refresh halaman
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) => DetailProfileUser(),
-              ),
-            );
-            print(msg);
-            // Tambahkan dialog atau logika error di sini
+
+            // Kembalikan nilai false untuk menandakan penambahan saldo gagal
             return false;
           }
         } else {
@@ -557,31 +568,20 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
             context: context,
             animType: AnimType.rightSlide,
             dialogType: DialogType.success,
-            title: 'Peringgatan',
-            desc: 'Saldo berhasil ditambahkan ',
-            btnOkOnPress: () {
-              Navigator.pop(context);
-            },
+            title: 'Peringatan',
+            desc: 'Saldo berhasil ditambahkan $msg',
+            btnOkOnPress: () {},
           ).show();
-          // Tambahkan dialog atau logika untuk respons tidak valid di sini
           return false;
         }
       } else {
         print('Request failed with status: ${response.statusCode}');
-        // Tambahkan dialog atau logika error di sini jika respons tidak 200
-        AwesomeDialog(
-          context: context,
-          animType: AnimType.rightSlide,
-          dialogType: DialogType.success,
-          title: 'Peringatan',
-          desc: msg,
-          btnOkOnPress: () {},
-        ).show();
+        // Tampilkan pesan error untuk respons yang tidak berhasil (status bukan 200)
         return false;
       }
     } catch (error) {
       print('Error: $error');
-      // Tambahkan dialog atau logika error di sini untuk error lainnya
+      // Tampilkan pesan error untuk error lainnya
       return false;
     }
   }

@@ -26,111 +26,138 @@ class _DataTransaksiComponentState extends State<DataTransaksiComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding:
-            EdgeInsets.symmetric(horizontal: getProportionateScreenHeight(20)),
-        child: SingleChildScrollView(
+    return Scaffold(
+      body: ListView(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenHeight(20),
+              vertical: getProportionateScreenHeight(10),
+            ),
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: dataTransaksi == null ? 0 : dataTransaksi.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return cardTransaksi(dataTransaksi[index]);
-                  // return cardTransaksi();
-                },
-              ),
-            )
-          ],
-        )),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: dataTransaksi == null ? 0 : dataTransaksi.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return cardTransaksi(dataTransaksi[index]);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-    ));
+    );
   }
 
   Widget cardTransaksi(data) {
     return data['buktiPembayaran'] == null
-        ? GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(
-                  context, UploadBuktiPembayaranScreen.routeName,
-                  arguments: data);
-            },
-            child: Card(
-              elevation: 10.0,
-              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255),
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "  Tanggal Pemesanan :                ${data['tanggal']}",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
-                child: ListTile(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  leading: Container(
-                    padding: EdgeInsets.only(right: 12.0),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                      context, UploadBuktiPembayaranScreen.routeName,
+                      arguments: data);
+                },
+                child: Card(
+                  elevation: 10.0,
+                  margin: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical:
+                          8.0), // Mengubah margin vertical untuk memberikan jarak antar card
+                  color: Colors.grey[100], // Ubah warna latar belakang card
+                  child: Container(
                     decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(width: 1.0, color: Colors.white24),
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 15.0,
+                        vertical: 7.0,
+                      ),
+                      leading: Container(
+                        padding: EdgeInsets.only(right: 2.0),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              width: 1.0,
+                              color: Colors.white24,
+                            ),
+                          ),
+                        ),
+                        child: Image.network(
+                          '$baseUrl/${data['dataBarang']['gambar']}',
+                        ),
+                      ),
+                      title: Text(
+                        "Menu : ${data['dataBarang']['nama']} ",
+                        style: TextStyle(
+                          color: Colors.black, // Ubah warna teks judul
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Harga Rp. ${data['harga']} ",
+                            style: TextStyle(
+                              color: Colors.black, // Ubah warna teks subtitle
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Jumlah Item : ${data['jumlah']} ",
+                            style: TextStyle(
+                              color: Colors.black, // Ubah warna teks subtitle
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Total Rp. ${data['total']} ",
+                            style: TextStyle(
+                              color: Colors.black, // Ubah warna teks subtitle
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Status : Pending ",
+                            style: TextStyle(
+                              color:
+                                  Colors.orange, // Ubah warna teks "Berhasil"
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_circle_right_sharp,
+                        size: 40,
+                        color: Colors.black,
                       ),
                     ),
-                    child: Image.network(
-                      '$baseUrl/${data['dataBarang']['gambar']}',
-                    ),
-                  ),
-                  title: Text(
-                    "${data['dataBarang']['nama']} ",
-                    style: TextStyle(
-                      color: mTitleColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Harga Rp. ${data['harga']} ",
-                        style: TextStyle(
-                          color: mTitleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "Jumlah Item : ${data['jumlah']} ",
-                        style: TextStyle(
-                          color: mTitleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "Total Rp. ${data['total']} ",
-                        style: TextStyle(
-                          color: mTitleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "Pending ",
-                        style: TextStyle(
-                          color: Colors.orange,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: Icon(
-                    Icons.keyboard_arrow_right,
-                    color: mTitleColor,
-                    size: 30.0,
                   ),
                 ),
               ),
-            ),
+            ],
           )
         : Text(
             "",

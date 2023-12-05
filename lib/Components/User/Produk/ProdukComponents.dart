@@ -86,7 +86,7 @@ class _ProdukComponentState extends State<ProdukComponent> {
         elevation: 10.0,
         color: Colors.white,
         child: Padding(
-          padding: EdgeInsets.all(5.0),
+          padding: EdgeInsets.all(4.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -14,6 +14,9 @@ class TransaksiForm extends StatefulWidget {
   State<TransaksiForm> createState() => _TransaksiFormState();
 }
 
+var amount = '';
+var amount2 = '';
+
 class _TransaksiFormState extends State<TransaksiForm> {
   var total = 0.0;
   var jumlahBeli = 0.0;
@@ -243,12 +246,11 @@ class _TransaksiFormState extends State<TransaksiForm> {
                       desc:
                           'Yakin ingin melakukan pembelian ${TransaksiScreen.dataProduk['nama']}',
                       btnOkOnPress: () {
-                        updateQtyProduct(
-                          TransaksiScreen.dataProduk['qty'] - jumlahBeli,
-                        );
                         updateSaldoUser(
                           UserScreen.dataUserLogin['saldo'] - total,
                         );
+                        minusQty(jumlahBeli.toInt());
+                        minusBalance(total.toInt());
                         prosesTransaksi(
                             TransaksiScreen.dataProduk['_id'],
                             UserScreen.dataUserLogin['_id'],
@@ -353,309 +355,78 @@ class _TransaksiFormState extends State<TransaksiForm> {
     }
   }
 
-  void updateQtyProduct(newQty) async {
+  Future<bool> minusQty(int stock) async {
     bool status;
     var msg;
-    var formData = FormData.fromMap({
-      'qty': newQty,
-    });
+
     try {
-      response = await dio.put(
-          "$urlupdateProductQty/${TransaksiScreen.dataProduk['_id']}",
-          data: formData);
-      status = response!.data['sukses'];
-      msg = response!.data['msg'];
-      if (status) {
-        setState(() {
-          TransaksiScreen.dataProduk['qty'] = newQty;
-        });
-        print('Stok produk diperbarui: $newQty  dan $msg');
+      Response response = await dio.put(
+        "$urlupdateProductQty/${TransaksiScreen.dataProduk['_id']}",
+        data: {'stock': stock},
+      );
+
+      if (response.statusCode == 200) {
+        if (response.data != null && response.data['sukses'] != null) {
+          status = response.data['sukses'];
+          msg = response.data['msg'];
+
+          if (status) {
+            print(msg);
+            TransaksiScreen.dataProduk['qty'] += stock;
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          print('Invalid response format');
+
+          return false;
+        }
       } else {
-        print('Gagal memperbarui stok produk: $msg');
+        print('Request failed with status: ${response.statusCode}');
+        // Tampilkan pesan error untuk respons yang tidak berhasil (status bukan 200)
+        return false;
       }
-    } catch (e) {
-      print('Terjadi kesalahan saat memperbarui stok produk: $e');
+    } catch (error) {
+      print('Error: $error');
+      return false;
+    }
+  }
+
+  Future<bool> minusBalance(int addedBalance) async {
+    bool status;
+    var msg;
+
+    try {
+      Response response = await dio.put(
+        "$urlminussaldo/${UserScreen.dataUserLogin['_id']}",
+        data: {'addedBalance': addedBalance},
+      );
+
+      if (response.statusCode == 200) {
+        if (response.data != null && response.data['sukses'] != null) {
+          status = response.data['sukses'];
+          msg = response.data['msg'];
+
+          if (status) {
+            print(msg);
+            UserScreen.dataUserLogin['saldo'] += addedBalance;
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          print('Invalid response format');
+
+          return false;
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        return false;
+      }
+    } catch (error) {
+      print('Error: $error');
+      return false;
     }
   }
 }
-
-// import 'package:awesome_dialog/awesome_dialog.dart';
-// import 'package:dio/dio.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_spinbox/flutter_spinbox.dart';
-// import 'package:kantin_stis/API/configAPI.dart';
-// import 'package:kantin_stis/Components/default_button_cusomte_color.dart';
-// import 'package:kantin_stis/Screens/User/Transaksi/TransaksiScreen.dart';
-// import 'package:kantin_stis/Screens/User/UserScreen.dart';
-// import 'package:kantin_stis/Utils/constants.dart';
-// import 'package:kantin_stis/size_config.dart';
-
-// class TransaksiForm extends StatefulWidget {
-//   @override
-//   State<TransaksiForm> createState() => _TransaksiFormState();
-// }
-
-// class _TransaksiFormState extends State<TransaksiForm> {
-//   var totalBayar = 0.0;
-//   var jumlahBeli = 0.0;
-//   var hargaBarang = TransaksiScreen.dataProduk['harga'];
-
-//   Response? response;
-//   var dio = Dio();
-//   @override
-//   Widget build(BuildContext context) {
-//     print(TransaksiScreen.dataProduk);
-//     return Form(
-//         child: Column(
-//       children: [
-//         Image.network(
-//           "$baseUrl/${TransaksiScreen.dataProduk['gambar']}",
-//           width: 250,
-//           height: 250,
-//           fit: BoxFit.cover,
-//         ),
-//         SizedBox(
-//           height: getProportionateScreenHeight(20),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "Nama Barang",
-//                 style: mTitleStyle,
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "${TransaksiScreen.dataProduk['nama']}",
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10, top: 5),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "Tipe",
-//                 style: mTitleStyle,
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "${TransaksiScreen.dataProduk['tipe']}",
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10, top: 5),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "Harga",
-//                 style: mTitleStyle,
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "${TransaksiScreen.dataProduk['harga']}",
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10, top: 5),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "Merek",
-//                 style: mTitleStyle,
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "${TransaksiScreen.dataProduk['deskripsi']}",
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//           padding: EdgeInsets.only(left: 10, top: 5),
-//           child: Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 "Jumlah Beli",
-//                 style: mTitleStyle,
-//               )
-//             ],
-//           ),
-//         ),
-//         Padding(
-//             padding: EdgeInsets.only(left: 10, top: 3),
-//             child: SpinBox(
-//               min: 0,
-//               max: 100,
-//               value: 0,
-//               onChanged: (value) {
-//                 setState(() {
-//                   jumlahBeli = value;
-//                   totalBayar = jumlahBeli * hargaBarang;
-//                 });
-//               },
-//             )),
-//         SizedBox(
-//           height: getProportionateScreenHeight(20),
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.end,
-//           crossAxisAlignment: CrossAxisAlignment.end,
-//           children: [
-//             Padding(
-//               padding: EdgeInsets.only(left: 10, top: 5),
-//               child: Row(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     "Total",
-//                     style: mTitleStyle,
-//                   )
-//                 ],
-//               ),
-//             ),
-//             Padding(
-//               padding: EdgeInsets.only(left: 10, top: 5),
-//               child: Row(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     "$totalBayar",
-//                     style: mTitleStyle,
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//         SizedBox(
-//           height: getProportionateScreenHeight(20),
-//         ),
-//         DefaultButtonCustomeColor(
-//           color: kPrimaryColor,
-//           text: "Beli",
-//           press: () {
-//             if (totalBayar <= 0 || jumlahBeli <= 0) {
-//               AwesomeDialog(
-//                 context: context,
-//                 dialogType: DialogType.INFO,
-//                 animType: AnimType.RIGHSLIDE,
-//                 title: 'Peringatan',
-//                 desc: 'Jumlah pembelian harus lebih dari 1',
-//                 btnOkOnPress: () {},
-//               ).show();
-//             } else {
-//               AwesomeDialog(
-//                       context: context,
-//                       dialogType: DialogType.INFO,
-//                       animType: AnimType.RIGHSLIDE,
-//                       title: 'Peringatan',
-//                       desc:
-//                           'Yakin ingin melakukan pembelian gitar ${TransaksiScreen.dataProduk['nama']} ?....',
-//                       btnOkOnPress: () {
-//                         prosesTransaksi(
-//                             TransaksiScreen.dataProduk['_id'],
-//                             UserScreen.dataUserLogin['_id'],
-//                             jumlahBeli,
-//                             hargaBarang,
-//                             totalBayar);
-//                       },
-//                       btnCancelOnPress: () {})
-//                   .show();
-//             }
-//           },
-//         ),
-//         SizedBox(
-//           height: getProportionateScreenHeight(20),
-//         ),
-//       ],
-//     ));
-//   }
-
-//   void prosesTransaksi(idBarang, idUser, jumlah, harga, total) async {
-//     bool status;
-//     var msg;
-//     try {
-//       response = await dio.post(createTransaksi, data: {
-//         'idBarang': idBarang,
-//         'idUser': idUser,
-//         'jumlah': jumlah,
-//         'harga': harga,
-//         'total': total,
-//       });
-
-//       status = response!.data['sukses'];
-//       msg = response!.data['msg'];
-//       if (status) {
-//         AwesomeDialog(
-//           context: context,
-//           dialogType: DialogType.SUCCES,
-//           animType: AnimType.RIGHSLIDE,
-//           title: 'Peringatan',
-//           desc: 'Berhasil Transaksi',
-//           btnOkOnPress: () {
-//             Navigator.pushNamed(context, UserScreen.routeName,
-//                 arguments: UserScreen.dataUserLogin);
-//           },
-//         ).show();
-//       } else {
-//         AwesomeDialog(
-//           context: context,
-//           dialogType: DialogType.ERROR,
-//           animType: AnimType.RIGHSLIDE,
-//           title: 'Peringatan',
-//           desc: 'Gagal Transaksi => $msg',
-//           btnOkOnPress: () {},
-//         ).show();
-//       }
-//     } catch (e) {
-//       AwesomeDialog(
-//         context: context,
-//         dialogType: DialogType.ERROR,
-//         animType: AnimType.RIGHSLIDE,
-//         title: 'Peringatan',
-//         desc: 'Terjadi Kesalahan Pada Server',
-//         btnOkOnPress: () {},
-//       ).show();
-//     }
-//   }
-// }

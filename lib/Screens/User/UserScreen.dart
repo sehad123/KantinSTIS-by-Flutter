@@ -24,6 +24,7 @@ class UserScreen extends StatelessWidget {
         leading: Icon(
           Icons.home,
           color: mTitleColor,
+          size: 30,
         ),
         actions: [
           GestureDetector(
@@ -34,6 +35,7 @@ class UserScreen extends StatelessWidget {
             child: Icon(
               Icons.person,
               color: mTitleColor,
+              size: 30,
             ),
           ),
           SizedBox(

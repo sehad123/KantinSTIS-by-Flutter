@@ -26,104 +26,128 @@ class _DataTransaksiComponentBerhasilState
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SizedBox(
-        width: double.infinity,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: getProportionateScreenWidth(20),
-          ),
-          child: SingleChildScrollView(
+    return Scaffold(
+      body: ListView(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenHeight(20),
+              vertical: getProportionateScreenHeight(10),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  child: dataTransaksi == null
-                      ? CircularProgressIndicator() // Placeholder for loading indicator
-                      : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: dataTransaksi.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return cardTransaksi(dataTransaksi[index]);
-                          },
-                        ),
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: dataTransaksi == null ? 0 : dataTransaksi.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return cardTransaksi(dataTransaksi[index]);
+                  },
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
   Widget cardTransaksi(data) {
     return data['buktiPembayaran'] != null
-        ? GestureDetector(
-            onTap: () {},
-            child: Card(
-              elevation: 10.0,
-              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
-              color: Colors.grey[100], // Ubah warna latar belakang card
-              child: Container(
-                child: ListTile(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                  leading: Container(
-                    padding: EdgeInsets.only(right: 12.0),
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "  Tanggal Pemesanan :                ${data['tanggal']}",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Card(
+                  elevation: 10.0,
+                  margin: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical:
+                          8.0), // Mengubah margin vertical untuk memberikan jarak antar card
+                  color: Colors.grey[100], // Ubah warna latar belakang card
+                  child: Container(
                     decoration: BoxDecoration(
-                      border: Border(
-                        right: BorderSide(width: 1.0, color: Colors.white24),
+                        color: Color.fromARGB(255, 255, 255, 255)),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 15.0,
+                        vertical: 7.0,
+                      ),
+                      leading: Container(
+                        padding: EdgeInsets.only(right: 2.0),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              width: 1.0,
+                              color: Colors.white24,
+                            ),
+                          ),
+                        ),
+                        child: Image.network(
+                          '$baseUrl/${data['dataBarang']['gambar']}',
+                        ),
+                      ),
+                      title: Text(
+                        "Menu : ${data['dataBarang']['nama']} ",
+                        style: TextStyle(
+                          color: Colors.black, // Ubah warna teks judul
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Harga Rp. ${data['harga']} ",
+                            style: TextStyle(
+                              color: Colors.black, // Ubah warna teks subtitle
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Jumlah Item : ${data['jumlah']} ",
+                            style: TextStyle(
+                              color: Colors.black, // Ubah warna teks subtitle
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Total Rp. ${data['total']} ",
+                            style: TextStyle(
+                              color: Colors.black, // Ubah warna teks subtitle
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            "Status : Berhasil ",
+                            style: TextStyle(
+                              color: Colors.green, // Ubah warna teks "Berhasil"
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Image.network(
-                      '$baseUrl/${data['dataBarang']['gambar']}',
-                    ),
-                  ),
-                  title: Text(
-                    "Menu : ${data['dataBarang']['nama']} ",
-                    style: TextStyle(
-                        color: Colors.black, // Ubah warna teks judul
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
-                  subtitle: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Harga Rp. ${data['harga']} ",
-                        style: TextStyle(
-                            color: Colors.black, // Ubah warna teks subtitle
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      Text(
-                        "Jumlah Item : ${data['jumlah']} ",
-                        style: TextStyle(
-                            color: Colors.black, // Ubah warna teks subtitle
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      Text(
-                        "Total Rp. ${data['total']} ",
-                        style: TextStyle(
-                            color: Colors.black, // Ubah warna teks subtitle
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16),
-                      ),
-                      Text(
-                        "Status : Berhasil ",
-                        style: TextStyle(
-                            color: Colors.green, // Ubah warna teks "Berhasil"
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                    ],
                   ),
                 ),
               ),
-            ),
+            ],
           )
         : Text(
             "",
@@ -166,5 +190,4 @@ class _DataTransaksiComponentBerhasilState
       ).show();
     }
   }
-
 }

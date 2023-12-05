@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kantin_stis/Screens/Admin/Crud/DetailProductScreen.dart';
+import 'package:kantin_stis/Screens/SplashScreen.dart';
 import 'package:kantin_stis/Screens/User/ProfileUserScreen.dart';
 import 'package:kantin_stis/Screens/User/Produk/DataProdukScreen.dart';
 import 'package:kantin_stis/Screens/Admin/Crud/EditProdukScreen.dart';
@@ -17,6 +18,7 @@ import 'package:kantin_stis/Screens/User/UserScreen.dart';
 final Map<String, WidgetBuilder> routes = {
   // route login & register
   LoginScreen.routeName: (context) => LoginScreen(),
+  SplashScreen.routeName: (context) => SplashScreen(),
   RegisterScreen.routeName: (context) => RegisterScreen(),
 
   // route admin

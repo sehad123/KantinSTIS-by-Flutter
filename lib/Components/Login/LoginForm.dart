@@ -35,7 +35,7 @@ class _SignInForm extends State<SignInform> {
           buildUserName(),
           SizedBox(height: 30),
           buildPassword(),
-          SizedBox(height: 30),
+          SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -52,7 +52,7 @@ class _SignInForm extends State<SignInform> {
             ),
           ),
           SizedBox(
-              height: 20), // Memberikan jarak antara tombol 'Login' dan 'Row'
+              height: 10), // Memberikan jarak antara tombol 'Login' dan 'Row'
 
           Row(
             children: [
@@ -63,7 +63,10 @@ class _SignInForm extends State<SignInform> {
                       remember = value;
                     });
                   }),
-              Text("Tetap Masuk"),
+              Text(
+                "Tetap Masuk",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              ),
               Spacer(),
               GestureDetector(
                 onTap: () {
@@ -71,22 +74,26 @@ class _SignInForm extends State<SignInform> {
                 },
                 child: Text(
                   "Lupa Password",
-                  style: TextStyle(decoration: TextDecoration.underline),
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue[400],
+                      fontSize: 16),
                 ),
               )
             ],
           ),
 
           SizedBox(
-            height: 20,
+            height: 30,
           ),
           GestureDetector(
             onTap: () {
               Navigator.pushNamed(context, RegisterScreen.routeName);
             },
             child: Text(
-              "Belum Punya Akun ? Daftar Dulu",
-              style: TextStyle(decoration: TextDecoration.underline),
+              "Belum Punya Akun ? Register ",
+              style:
+                  TextStyle(decoration: TextDecoration.underline, fontSize: 16),
             ),
           ),
         ],
@@ -238,24 +245,82 @@ class _SignInForm extends State<SignInform> {
 
       if (response.statusCode == 200) {
         var userData = response.data['data'];
-        showResetPasswordDialog(username, userData['_id']);
+        showEmailDialog(username, userData['_id']);
       } else {
         showErrorDialog(
             'Username tidak terdaftar', 'Username tidak terdaftar.');
       }
     } catch (e) {
-      showErrorDialog('Error', 'Username tidak ditemukan ');
+      showErrorDialog('Error', 'Terjadi kesalahan saat memproses permintaan.');
     }
   }
 
-  void showResetPasswordDialog(String username, String userId) {
+  void showEmailDialog(String username, String userId) {
+    TextEditingController emailController = TextEditingController();
+
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.INFO,
+      title: 'Email',
+      desc: 'Masukkan Email anda',
+      body: Column(
+        children: [
+          TextFormField(
+            controller: emailController,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: 'Email',
+            ),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              if (!emailController.text.contains('@gmail.com')) {
+                showErrorDialog("Error", "email tidak valid");
+              } else {
+                checkEmail(username, userId, emailController.text);
+              }
+            },
+            child: Text('Next'),
+          ),
+        ],
+      ),
+    ).show();
+  }
+
+  void checkEmail(String username, String userId, String email) async {
+    try {
+      Response response = await Dio().post(
+        "$urlcekemailbyid/$userId",
+        data: {
+          'email': email,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var result = response.data;
+        if (result['success']) {
+          showResetPasswordDialog(email, userId);
+        } else {
+          showErrorDialog(
+              'Email tidak sesuai', 'Email tidak sesuai dengan data pengguna.');
+        }
+      } else {
+        showErrorDialog('Error', 'Terjadi kesalahan saat memeriksa email.');
+      }
+    } catch (e) {
+      showErrorDialog('Error', 'Email tidak sesuai pada saat registrasi.');
+    }
+  }
+
+  void showResetPasswordDialog(String email, String userId) {
     TextEditingController newPasswordController = TextEditingController();
 
     AwesomeDialog(
       context: context,
       dialogType: DialogType.INFO,
       title: 'Reset Password',
-      desc: 'Masukkan Password Baru untuk $username',
+      desc: 'Masukkan Password Baru untuk $email',
       body: Column(
         children: [
           TextFormField(
