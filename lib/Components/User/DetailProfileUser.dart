@@ -42,36 +42,89 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          GestureDetector(
-            onTap: _pickImage,
-            child: Container(
-              height: 150,
-              width: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.black,
-                  width: 2,
+          Stack(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await _pickImage(); // Memilih gambar baru
+                  uploadFoto(image!.path); // Mengirim gambar terpilih ke server
+                },
+                child: Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 2,
+                    ),
+                  ),
+                  child: image != null
+                      ? ClipOval(
+                          // child: Image.network(
+                          //   '$baseUrl/${ProfileUserScreen.data_user['gambar']}',
+                          //   height: 150,
+                          //   width: 130,
+                          // ),
+                          child: Image.file(
+                            image!,
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : ClipOval(
+                          child: Image.asset(
+                            "assets/images/User.png",
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                 ),
               ),
-              child: image != null
-                  ? ClipOval(
-                      child: Image.file(
-                        image!,
-                        height: 150,
-                        width: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : ClipOval(
-                      child: Image.asset(
-                        "assets/images/User.png",
-                        height: 150,
-                        width: 150,
-                        fit: BoxFit.cover,
-                      ),
+              Positioned(
+                top: 5,
+                right: 5,
+                child: GestureDetector(
+                  onTap: () {
+                    AwesomeDialog(
+                      context: context,
+                      animType: AnimType.rightSlide,
+                      dialogType: DialogType.info,
+                      title: 'Peringatan',
+                      desc: 'Yakin Ingin hapus foto',
+                      btnCancelOnPress: () {},
+                      btnCancelText: 'Tidak',
+                      btnOkText: 'Yakin',
+                      btnOkOnPress: () {
+                        setState(() {
+                          image = null;
+                        });
+                        AwesomeDialog(
+                          context: context,
+                          animType: AnimType.rightSlide,
+                          dialogType: DialogType.success,
+                          title: 'Peringatan',
+                          desc: 'Gambar Berhasil dihapus',
+                          btnOkOnPress: () {},
+                        ).show();
+                      },
+                    ).show();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
                     ),
-            ),
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 10),
           Text(
@@ -115,6 +168,52 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
         ],
       ),
     );
+  }
+
+  void uploadFoto(gambar) async {
+    bool status;
+    var msg;
+    try {
+      var formData = FormData.fromMap({
+        'gambar': await MultipartFile.fromFile(gambar),
+      });
+      response = await dio.put(
+          "$urluploadfoto/${ProfileUserScreen.data_user['_id']}",
+          data: formData);
+      status = response!.data['sukses'];
+      msg = response!.data['msg'];
+      if (status) {
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.rightSlide,
+          dialogType: DialogType.success,
+          title: 'Peringatan',
+          desc: 'Gambar Berhasil diupload => $msg',
+          btnOkOnPress: () {
+            // Navigator.pushNamed(context, UserScreen.routeName,
+            //     arguments: UserScreen.dataUserLogin);
+          },
+        ).show();
+      } else {
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.rightSlide,
+          dialogType: DialogType.error,
+          title: 'Peringatan',
+          desc: 'Gagal mengambil foto => $msg',
+          btnOkOnPress: () {},
+        ).show();
+      }
+    } catch (e) {
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.rightSlide,
+        dialogType: DialogType.error,
+        title: 'Peringatan',
+        desc: 'terjadi kesalahan server \n => $msg',
+        btnOkOnPress: () {},
+      ).show();
+    }
   }
 
   Widget buildListTile(String title, String imagePath, Function()? onTap) {
@@ -301,10 +400,9 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
           dialogType: DialogType.success,
           title: 'Sukses',
           desc: 'Password berhasil diubah',
-          btnOkOnPress: () {
-            Navigator.pop(context);
-          },
+          btnOkOnPress: () {},
         ).show();
+        Navigator.pop(context);
         return true;
       } else {
         print(msg);
@@ -371,6 +469,20 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
                   ).show();
                 } else {
                   var success = await addBalance(int.parse(amount));
+                  if (success) {
+                    // Perbarui saldo secara langsung pada tampilan
+                    setState(() {
+                      ProfileUserScreen.data_user['saldo'] += int.parse(amount);
+                    });
+
+                    // Refresh halaman
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => DetailProfileUser(),
+                      ),
+                    );
+                  }
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -388,11 +500,6 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
         );
       },
     );
-
-    // Check result and perform action if needed
-    if (result != null && result) {
-      // Do something if the balance was successfully added
-    }
   }
 
   Future<bool> addBalance(int addedBalance) async {
@@ -423,6 +530,23 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
             ).show();
             return true;
           } else {
+            AwesomeDialog(
+              context: context,
+              animType: AnimType.rightSlide,
+              dialogType: DialogType.success,
+              title: 'Peringgatan',
+              desc: 'Saldo berhasil ditambahkan ',
+              btnOkOnPress: () {
+                Navigator.pop(context);
+              },
+            ).show();
+            // Refresh halaman
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => DetailProfileUser(),
+              ),
+            );
             print(msg);
             // Tambahkan dialog atau logika error di sini
             return false;
@@ -434,7 +558,7 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
             animType: AnimType.rightSlide,
             dialogType: DialogType.success,
             title: 'Peringgatan',
-            desc: 'Sakdo berhasil ditambahkan ',
+            desc: 'Saldo berhasil ditambahkan ',
             btnOkOnPress: () {
               Navigator.pop(context);
             },

@@ -136,3 +136,34 @@ class _FormUploadPembayaran extends State<FormUploadPembayaran> {
     }
   }
 }
+
+// // Fungsi untuk mengupdate foto profil ke server
+//   Future<void> _updateProfilePicture(gambar) async {
+//     if (image != null) {
+//       try {
+//         FormData formData = FormData.fromMap({
+//           "gambar": await MultipartFile.fromFile(
+//             image!.path,
+//             filename: "profile_image.png",
+//           ),
+//         });
+
+//         Response response = await dio.put(
+//           "$urluploadfoto/${ProfileUserScreen.data_user['_id']}",
+//           data: formData,
+//         );
+
+//         if (response.statusCode == 200) {
+//           // Gambar profil berhasil diperbarui
+//           // Tambahkan logika atau pesan sukses di sini
+//           print("Gambar profil berhasil diperbarui");
+//         } else {
+//           // Tambahkan logika atau pesan error jika update gagal
+//           print("Gagal mengupdate gambar profil");
+//         }
+//       } catch (error) {
+//         // Tangani error yang terjadi selama proses update
+//         print("Error: $error");
+//       }
+//     }
+//   }

@@ -13,7 +13,7 @@ class DataTransaksiBerhasil extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          "Riwayat Transaksi",
+          "Riwayat Belanja ",
           style: TextStyle(color: mTitleColor, fontWeight: FontWeight.bold),
         ),
       ),

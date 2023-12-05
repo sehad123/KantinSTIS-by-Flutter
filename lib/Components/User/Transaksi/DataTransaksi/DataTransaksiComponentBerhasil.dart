@@ -63,11 +63,9 @@ class _DataTransaksiComponentBerhasilState
             onTap: () {},
             child: Card(
               elevation: 10.0,
-              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+              margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
+              color: Colors.grey[100], // Ubah warna latar belakang card
               child: Container(
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 255),
-                ),
                 child: ListTile(
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -83,11 +81,11 @@ class _DataTransaksiComponentBerhasilState
                     ),
                   ),
                   title: Text(
-                    "${data['dataBarang']['nama']} ",
+                    "Menu : ${data['dataBarang']['nama']} ",
                     style: TextStyle(
-                      color: mTitleColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: Colors.black, // Ubah warna teks judul
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
                   ),
                   subtitle: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -96,30 +94,30 @@ class _DataTransaksiComponentBerhasilState
                       Text(
                         "Harga Rp. ${data['harga']} ",
                         style: TextStyle(
-                          color: mTitleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.black, // Ubah warna teks subtitle
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                       Text(
                         "Jumlah Item : ${data['jumlah']} ",
                         style: TextStyle(
-                          color: mTitleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.black, // Ubah warna teks subtitle
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                       Text(
                         "Total Rp. ${data['total']} ",
                         style: TextStyle(
-                          color: mTitleColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.black, // Ubah warna teks subtitle
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
                       Text(
-                        "Berhasil ",
+                        "Status : Berhasil ",
                         style: TextStyle(
-                          color: kPrimaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.green, // Ubah warna teks "Berhasil"
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
                       ),
                     ],
                   ),
@@ -168,4 +166,5 @@ class _DataTransaksiComponentBerhasilState
       ).show();
     }
   }
+
 }
