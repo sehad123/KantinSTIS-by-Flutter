@@ -302,37 +302,52 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
   void _showChangePasswordDialog() {
     String oldPassword = '';
     String newPassword = '';
+    String konfirmasinNewPassword = '';
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Ubah Password'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password Lama',
-                  border: OutlineInputBorder(),
+          content: SingleChildScrollView(
+            // Tambahkan SingleChildScrollView di sini
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password Lama',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    oldPassword = value;
+                  },
                 ),
-                onChanged: (value) {
-                  oldPassword = value;
-                },
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password Baru',
-                  border: OutlineInputBorder(),
+                SizedBox(height: 10),
+                TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password Baru',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    newPassword = value;
+                  },
                 ),
-                onChanged: (value) {
-                  newPassword = value;
-                },
-              ),
-            ],
+                SizedBox(height: 10),
+                TextFormField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Konfirmasi Password',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    konfirmasinNewPassword = value;
+                  },
+                ),
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
@@ -356,9 +371,18 @@ class _DetailProfileUserState extends State<DetailProfileUser> {
                         'Password minimal harus 8 karakter dan kombinasi huruf dan angka',
                     btnOkOnPress: () {},
                   ).show();
+                } else if (konfirmasinNewPassword != newPassword) {
+                  AwesomeDialog(
+                    context: context,
+                    animType: AnimType.rightSlide,
+                    dialogType: DialogType.error,
+                    title: 'Peringatan',
+                    desc:
+                        'Konfirmasi passowrd harus sama dengan password baru anda',
+                    btnOkOnPress: () {},
+                  ).show();
                 } else {
                   var success = await changePassword(oldPassword, newPassword);
-
                   if (success != null && success) {
                     AwesomeDialog(
                       context: context,

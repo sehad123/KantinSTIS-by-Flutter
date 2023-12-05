@@ -208,30 +208,40 @@ class _SignInForm extends State<SignInform> {
   void showForgetPasswordDialog() {
     TextEditingController usernameController = TextEditingController();
 
-    AwesomeDialog(
+    showDialog(
       context: context,
-      dialogType: DialogType.INFO,
-      title: 'Lupa Password',
-      desc: 'Masukkan Username',
-      body: Column(
-        children: [
-          TextFormField(
-            controller: usernameController,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: 'Username',
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Masukkan Username'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: usernameController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Batal'),
             ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              checkUsername(usernameController.text);
-            },
-            child: Text('Next'),
-          ),
-        ],
-      ),
-    ).show();
+            ElevatedButton(
+              onPressed: () {
+                checkUsername(usernameController.text);
+              },
+              child: Text('Next'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void checkUsername(String username) async {
@@ -258,34 +268,44 @@ class _SignInForm extends State<SignInform> {
   void showEmailDialog(String username, String userId) {
     TextEditingController emailController = TextEditingController();
 
-    AwesomeDialog(
+    showDialog(
       context: context,
-      dialogType: DialogType.INFO,
-      title: 'Email',
-      desc: 'Masukkan Email anda',
-      body: Column(
-        children: [
-          TextFormField(
-            controller: emailController,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: 'Email',
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Masukkan Email Anda'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Batal'),
             ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              if (!emailController.text.contains('@gmail.com')) {
-                showErrorDialog("Error", "email tidak valid");
-              } else {
-                checkEmail(username, userId, emailController.text);
-              }
-            },
-            child: Text('Next'),
-          ),
-        ],
-      ),
-    ).show();
+            ElevatedButton(
+              onPressed: () {
+                if (!emailController.text.contains('@gmail.com')) {
+                  showErrorDialog("Error", "email tidak valid");
+                } else {
+                  checkEmail(username, userId, emailController.text);
+                }
+              },
+              child: Text('Next'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void checkEmail(String username, String userId, String email) async {
@@ -316,36 +336,47 @@ class _SignInForm extends State<SignInform> {
   void showResetPasswordDialog(String email, String userId) {
     TextEditingController newPasswordController = TextEditingController();
 
-    AwesomeDialog(
+    showDialog(
       context: context,
-      dialogType: DialogType.INFO,
-      title: 'Reset Password',
-      desc: 'Masukkan Password Baru untuk $email',
-      body: Column(
-        children: [
-          TextFormField(
-            controller: newPasswordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: 'Password Baru',
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Masukkan Password baru'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: newPasswordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password Baru',
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Batal'),
             ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              if (newPasswordController.text.length < 8)
-                showErrorDialog("Error", "Password minimal harus 8 karakter ");
-              else if (!containsLetterAndDigit(newPasswordController.text))
-                showErrorDialog(
-                    "Error", "Password harus berupa huruf dan angka ");
-              else
-                updatePassword(userId, newPasswordController.text);
-            },
-            child: Text('Reset Password'),
-          ),
-        ],
-      ),
-    ).show();
+            ElevatedButton(
+              onPressed: () {
+                if (newPasswordController.text.length < 8)
+                  showErrorDialog(
+                      "Error", "Password minimal harus 8 karakter ");
+                else if (!containsLetterAndDigit(newPasswordController.text))
+                  showErrorDialog(
+                      "Error", "Password harus berupa huruf dan angka ");
+                else
+                  updatePassword(userId, newPasswordController.text);
+              },
+              child: Text('Reset Password'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void updatePassword(String userId, String newPassword) async {
