@@ -177,12 +177,15 @@ class _HomesUserComponent extends State<HomeUserComponent> {
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "  Tanggal Pemesanan :                ${data['tanggal']}",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Container(
+                margin: EdgeInsets.only(top: 15, bottom: 15),
+                child: Text(
+                  "  Tanggal Pemesanan :             ${data['tanggal']}",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
               GestureDetector(
@@ -199,7 +202,6 @@ class _HomesUserComponent extends State<HomeUserComponent> {
                     child: ListTile(
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 20.0,
-                        vertical: 10.0,
                       ),
                       leading: Container(
                         padding: EdgeInsets.only(right: 12.0),
@@ -271,7 +273,7 @@ class _HomesUserComponent extends State<HomeUserComponent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "  Tanggal Pemesanan :                ${data['tanggal']}",
+                "  Tanggal Pemesanan :            ${data['tanggal']}",
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -295,7 +297,6 @@ class _HomesUserComponent extends State<HomeUserComponent> {
                     child: ListTile(
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 20.0,
-                        vertical: 10.0,
                       ),
                       leading: Container(
                         padding: EdgeInsets.only(right: 12.0),

@@ -11,7 +11,11 @@ class ProdukComponent extends StatefulWidget {
   State<ProdukComponent> createState() => _ProdukComponentState();
 }
 
+enum ProductType { All, Food, Drink } // Tambahkan enum untuk tipe produk
+
 class _ProdukComponentState extends State<ProdukComponent> {
+  ProductType _selectedType = ProductType
+      .All; // Tambahkan variabel untuk menyimpan tipe produk terpilih
   Response? response;
   var dio = Dio();
   var dataProduk;
@@ -33,6 +37,7 @@ class _ProdukComponentState extends State<ProdukComponent> {
             EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
         child: Column(
           children: [
+            SizedBox(height: 10),
             // Widget untuk input pencarian
             TextField(
               controller: searchController,
@@ -44,6 +49,33 @@ class _ProdukComponentState extends State<ProdukComponent> {
               onChanged: (value) {
                 filterData(value);
               },
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 250),
+              child: DropdownButton<ProductType>(
+                value: _selectedType,
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedType = newValue!;
+                    filterByType(
+                        _selectedType); // Panggil fungsi filter berdasarkan tipe
+                  });
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: ProductType.All,
+                    child: Text('Semua'),
+                  ),
+                  DropdownMenuItem(
+                    value: ProductType.Food,
+                    child: Text('Makanan'),
+                  ),
+                  DropdownMenuItem(
+                    value: ProductType.Drink,
+                    child: Text('Minuman'),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 10),
             Expanded(
@@ -76,6 +108,25 @@ class _ProdukComponentState extends State<ProdukComponent> {
     );
   }
 
+  void filterByType(ProductType selectedType) {
+    List<dynamic> filteredList = [];
+    if (selectedType == ProductType.All) {
+      filteredList.addAll(dataProduk);
+    } else {
+      dataProduk.forEach((item) {
+        if (selectedType == ProductType.Food && item['tipe'] == 'Makanan') {
+          filteredList.add(item);
+        } else if (selectedType == ProductType.Drink &&
+            item['tipe'] == 'Minuman') {
+          filteredList.add(item);
+        }
+      });
+    }
+    setState(() {
+      filteredData = filteredList;
+    });
+  }
+
   Widget cardProduk(data) {
     return GestureDetector(
       onTap: () {
@@ -85,61 +136,64 @@ class _ProdukComponentState extends State<ProdukComponent> {
       child: Card(
         elevation: 10.0,
         color: Colors.white,
-        child: Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Container(
-                    height: 100,
-                    child: Image.network(
-                      '$baseUrl/${data['gambar']}',
-                      height: 150,
-                      width: 130,
+        child: Container(
+          height: 300, // Atur tinggi card di sini
+          child: Padding(
+            padding: EdgeInsets.all(4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      child: Image.network(
+                        '$baseUrl/${data['gambar']}',
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 5),
-              Center(
-                child: Text(
-                  "${data['nama']} ",
-                  style: TextStyle(
+                SizedBox(height: 5),
+                Center(
+                  child: Text(
+                    "${data['nama']} ",
+                    style: TextStyle(
                       color: mTitleColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                ),
-              ),
-              Center(
-                child: Text(
-                  " Rp ${data['harga']} ",
-                  style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                ),
-              ),
-              Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                        10.0), // Ubah nilai sesuai keinginan
-                    color: Colors.blue[200],
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                  child: Text(
-                    "Pesan Sekarang",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
                 ),
-              ),
-            ],
+                Center(
+                  child: Text(
+                    " Rp ${data['harga']} ",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.blue[400],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                    child: Text(
+                      "Pesan Sekarang",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

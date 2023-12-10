@@ -59,7 +59,7 @@ class _DataTransaksiComponentState extends State<DataTransaksiComponent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "  Tanggal Pemesanan :                ${data['tanggal']}",
+                "  Tanggal Pemesanan :             ${data['tanggal']}",
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

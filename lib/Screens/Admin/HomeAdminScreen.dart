@@ -24,47 +24,47 @@ class HomeAdminScreen extends StatelessWidget {
           Icons.home,
           color: mTitleColor,
         ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, InputScreen.routeName);
-            },
-            child: Row(children: const [
-              Icon(Icons.add, color: mTitleColor),
-              Text(
-                "Input Data",
-                style:
-                    TextStyle(color: mTitleColor, fontWeight: FontWeight.bold),
-              )
-            ]),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-        ],
       ),
       body: AdminComponent(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          AwesomeDialog(
-            context: context,
-            animType: AnimType.rightSlide,
-            dialogType: DialogType.info,
-            title: 'Peringatan',
-            desc: 'Yakin Ingin Keluar dari aplikasi',
-            btnCancelOnPress: () {},
-            btnCancelText: 'Tidak',
-            btnOkText: 'Yakin',
-            btnOkOnPress: () {
-              Navigator.pushNamed(context, LoginScreen.routeName);
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 30),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, InputScreen.routeName);
+              },
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              AwesomeDialog(
+                context: context,
+                animType: AnimType.rightSlide,
+                dialogType: DialogType.info,
+                title: 'Peringatan',
+                desc: 'Yakin Ingin Keluar dari aplikasi',
+                btnCancelOnPress: () {},
+                btnCancelText: 'Tidak',
+                btnOkText: 'Yakin',
+                btnOkOnPress: () {
+                  Navigator.pushNamed(context, LoginScreen.routeName);
+                },
+              ).show();
             },
-          ).show();
-        },
-        backgroundColor: kColorRedSlow,
-        child: Icon(
-          Icons.logout,
-          color: Colors.white,
-        ),
+            backgroundColor: kColorRedSlow,
+            child: Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

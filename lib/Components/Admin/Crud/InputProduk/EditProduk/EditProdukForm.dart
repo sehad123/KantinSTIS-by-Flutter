@@ -16,16 +16,15 @@ class FormEditProduk extends StatefulWidget {
 }
 
 class _FormEditProduk extends State<FormEditProduk> {
+  String selectedTipe = '${EditScreen.dataProduk['tipe']}';
   TextEditingController txtNamaProduk =
-          TextEditingController(text: '${EditScreen.dataProduk['nama']}'),
-      txtTipeProduk =
-          TextEditingController(text: '${EditScreen.dataProduk['tipe']}'),
-      txtHargaProduk =
-          TextEditingController(text: '${EditScreen.dataProduk['harga']}'),
-      txtQtyProduk =
-          TextEditingController(text: '${EditScreen.dataProduk['qty']}'),
-      txtDeskripsiProduk =
-          TextEditingController(text: '${EditScreen.dataProduk['deskripsi']}');
+      TextEditingController(text: '${EditScreen.dataProduk['nama']}');
+  TextEditingController txtHargaProduk =
+      TextEditingController(text: '${EditScreen.dataProduk['harga']}');
+  TextEditingController txtQtyProduk =
+      TextEditingController(text: '${EditScreen.dataProduk['qty']}');
+  TextEditingController txtDeskripsiProduk =
+      TextEditingController(text: '${EditScreen.dataProduk['deskripsi']}');
 
   FocusNode focusNode = new FocusNode();
   File? image;
@@ -107,7 +106,7 @@ class _FormEditProduk extends State<FormEditProduk> {
                     desc: 'nama produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
-                } else if (txtTipeProduk.text == '') {
+                } else if (selectedTipe == '') {
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -146,7 +145,7 @@ class _FormEditProduk extends State<FormEditProduk> {
                 } else {
                   EditData(
                       txtNamaProduk.text,
-                      txtTipeProduk.text,
+                      selectedTipe,
                       txtHargaProduk.text,
                       txtQtyProduk.text,
                       txtDeskripsiProduk.text,
@@ -184,18 +183,31 @@ class _FormEditProduk extends State<FormEditProduk> {
     );
   }
 
-  TextFormField buildTipeProduk() {
-    return TextFormField(
-      controller: txtTipeProduk,
-      keyboardType: TextInputType.text,
-      style: mTitleStyle,
+  DropdownButtonFormField<String> buildTipeProduk() {
+    return DropdownButtonFormField<String>(
+      value: selectedTipe,
       decoration: InputDecoration(
-          labelText: 'Tipe Produk',
-          hintText: 'Masukkan tipe produk anda',
-          labelStyle: TextStyle(
-              color: focusNode.hasFocus ? mSubtitleColor : kPrimaryColor),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          suffixIcon: Icon(Icons.food_bank)),
+        labelText: 'Tipe Produk',
+        hintText: 'Pilih tipe produk',
+        labelStyle: TextStyle(
+          color: focusNode.hasFocus ? mSubtitleColor : kPrimaryColor,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.food_bank),
+      ),
+      items: <String>['Makanan', 'Minuman'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          setState(() {
+            selectedTipe = newValue;
+          });
+        }
+      },
     );
   }
 

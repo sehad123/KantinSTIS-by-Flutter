@@ -32,10 +32,13 @@ class UserScreen extends StatelessWidget {
               Navigator.pushNamed(context, ProfileUserScreen.routeName,
                   arguments: dataUserLogin);
             },
-            child: Icon(
-              Icons.person,
-              color: mTitleColor,
-              size: 30,
+            child: Container(
+              margin: EdgeInsets.only(right: 20),
+              child: Icon(
+                Icons.person,
+                color: mTitleColor,
+                size: 35,
+              ),
             ),
           ),
           SizedBox(

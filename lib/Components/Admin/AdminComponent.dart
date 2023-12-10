@@ -17,12 +17,18 @@ class _AdminComponent extends State<AdminComponent> {
   Response? response;
   var dio = Dio();
   var dataProduk;
+  var datauser;
+  var dataTransaksi;
+  var dataOmset;
+  int totalOmset = 0; // Menyimpan jumlah total omset
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getDataProduk();
+    getJumlahTransaksi();
+    getJumlahUser();
+    getTotalJumlah();
   }
 
   @override
@@ -34,25 +40,79 @@ class _AdminComponent extends State<AdminComponent> {
           padding: EdgeInsets.symmetric(
               horizontal: getProportionateScreenHeight(20)),
           child: SingleChildScrollView(
-            child: Column(children: [
-              SizedBox(
-                height: getProportionateScreenHeight(20),
-              ),
-              Container(
-                child: ListView.builder(
-                  scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(height: getProportionateScreenHeight(20)),
+                GridView.count(
                   shrinkWrap: true,
-                  itemCount: dataProduk == null ? 0 : dataProduk.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return cardProduk(dataProduk[index]);
-                  },
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  childAspectRatio: 2,
+                  children: [
+                    buildCardWithNumber(
+                        Icons.food_bank, dataProduk?.length ?? 0),
+                    buildCardWithNumber(Icons.person, datauser?.length ?? 0),
+                    buildCardWithNumber(
+                        Icons.list_alt, dataTransaksi?.length ?? 0),
+                    buildCardWithNumber(
+                        Icons.monetization_on_outlined, totalOmset ?? 0),
+                  ],
                 ),
-              )
-            ]),
+                SizedBox(height: getProportionateScreenHeight(20)),
+                Container(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: dataProduk == null ? 0 : dataProduk!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return cardProduk(dataProduk[index]);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  // Widget untuk membangun card dengan angka
+  Widget buildCardWithNumber(IconData icon, int number) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: EdgeInsets.all(0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40),
+            SizedBox(height: 3),
+            Text(
+              icon == Icons.monetization_on_outlined
+                  ? "Rp " + formatRupiah(int.parse(number.toString()))
+                  : number
+                      .toString(), // Tampilkan angka atau format Rupiah untuk total omset
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String formatRupiah(int nominal) {
+    String nominalString = nominal.toString();
+    String result = "";
+    int count = 0;
+    for (int i = nominalString.length - 1; i >= 0; i--) {
+      result = nominalString[i] + result;
+      count++;
+      if (count % 3 == 0 && count != nominalString.length) {
+        result = "." + result;
+      }
+    }
+    return result;
   }
 
   Widget cardProduk(data) {
@@ -153,6 +213,113 @@ class _AdminComponent extends State<AdminComponent> {
     );
   }
 
+  void getJumlahUser() async {
+    bool status;
+    var msg;
+    try {
+      response = await dio.get(urlgetuser);
+      status = response!.data['sukses'];
+      msg = response!.data['msg'];
+      if (status) {
+        setState(() {
+          datauser = response!.data['data'];
+          // datauser.length;
+          print(datauser);
+        });
+      } else {
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.rightSlide,
+          dialogType: DialogType.error,
+          title: 'Peringatan',
+          desc: ' produk tidak ditemukan',
+          btnOkOnPress: () {},
+        ).show();
+      }
+    } catch (e) {
+      print(e);
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.rightSlide,
+        dialogType: DialogType.error,
+        title: 'Peringatan',
+        desc: 'Kesalahan Internal Server',
+        btnOkOnPress: () {},
+      ).show();
+    }
+  }
+
+  void getJumlahTransaksi() async {
+    bool status;
+    var msg;
+    try {
+      response = await dio.get(getallTransaksi);
+      status = response!.data['sukses'];
+      msg = response!.data['msg'];
+      if (status) {
+        setState(() {
+          dataTransaksi = response!.data['data'];
+          // dataTransaksi.length;
+          print(dataTransaksi);
+        });
+      } else {
+        AwesomeDialog(
+          context: context,
+          animType: AnimType.rightSlide,
+          dialogType: DialogType.error,
+          title: 'Peringatan',
+          desc: ' produk tidak ditemukan',
+          btnOkOnPress: () {},
+        ).show();
+      }
+    } catch (e) {
+      print(e);
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.rightSlide,
+        dialogType: DialogType.error,
+        title: 'Peringatan',
+        desc: 'Kesalahan Internal Server',
+        btnOkOnPress: () {},
+      ).show();
+    }
+  }
+
+  void getTotalJumlah() async {
+    bool status;
+    var msg;
+    try {
+      response = await dio.get(getallTransaksi);
+      status = response!.data['sukses'];
+      msg = response!.data['msg'];
+
+      if (status) {
+        setState(() {
+          dataOmset = response!.data['data'];
+
+          // Menghitung total omset dari nilai atribut 'total'
+          totalOmset = calculateTotalOmset(dataOmset);
+          print('Total Omset: $totalOmset');
+        });
+      } else {
+        throw Exception('Gagal mendapatkan jumlah transaksi');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+// Fungsi untuk menghitung total omset
+  int calculateTotalOmset(List<dynamic>? data) {
+    int total = 0;
+    if (data != null) {
+      for (var transaksi in data) {
+        total += double.parse(transaksi['total'].toString()).round();
+      }
+    }
+    return total;
+  }
+
   void getDataProduk() async {
     bool status;
     var msg;
@@ -163,6 +330,7 @@ class _AdminComponent extends State<AdminComponent> {
       if (status) {
         setState(() {
           dataProduk = response!.data['data'];
+          // dataProduk.length;
           print(dataProduk);
         });
       } else {

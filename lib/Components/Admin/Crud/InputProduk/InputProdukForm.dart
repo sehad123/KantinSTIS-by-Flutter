@@ -9,12 +9,15 @@ import 'package:kantin_stis/Screens/Admin/HomeAdminScreen.dart';
 import 'package:kantin_stis/Utils/constants.dart';
 import 'package:image_picker/image_picker.dart';
 
+//  953ae063-2aab-4a26-99ad-1d5c5e2ce036
+
 class FormInputProduk extends StatefulWidget {
   @override
   _FormInputProduk createState() => _FormInputProduk();
 }
 
 class _FormInputProduk extends State<FormInputProduk> {
+  String selectedTipe = 'Makanan'; // Default value yang dipilih
   TextEditingController txtNamaProduk = TextEditingController(),
       txtTipeProduk = TextEditingController(),
       txtHargaProduk = TextEditingController(),
@@ -98,7 +101,7 @@ class _FormInputProduk extends State<FormInputProduk> {
                     desc: 'nama produk tidak boleh kosong',
                     btnOkOnPress: () {},
                   ).show();
-                } else if (txtTipeProduk.text == '') {
+                } else if (selectedTipe == '') {
                   AwesomeDialog(
                     context: context,
                     animType: AnimType.rightSlide,
@@ -137,7 +140,7 @@ class _FormInputProduk extends State<FormInputProduk> {
                 } else {
                   inputData(
                       txtNamaProduk.text,
-                      txtTipeProduk.text,
+                      selectedTipe,
                       txtHargaProduk.text,
                       txtQtyProduk.text,
                       txtDeskripsiProduk.text,
@@ -175,18 +178,31 @@ class _FormInputProduk extends State<FormInputProduk> {
     );
   }
 
-  TextFormField buildTipeProduk() {
-    return TextFormField(
-      controller: txtTipeProduk,
-      keyboardType: TextInputType.text,
-      style: mTitleStyle,
+  DropdownButtonFormField<String> buildTipeProduk() {
+    return DropdownButtonFormField<String>(
+      value: selectedTipe,
       decoration: InputDecoration(
-          labelText: 'Tipe Produk',
-          hintText: 'Masukkan tipe produk anda',
-          labelStyle: TextStyle(
-              color: focusNode.hasFocus ? mSubtitleColor : kPrimaryColor),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          suffixIcon: Icon(Icons.food_bank)),
+        labelText: 'Tipe Produk',
+        hintText: 'Pilih tipe produk',
+        labelStyle: TextStyle(
+          color: focusNode.hasFocus ? mSubtitleColor : kPrimaryColor,
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: Icon(Icons.food_bank),
+      ),
+      items: <String>['Makanan', 'Minuman'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          setState(() {
+            selectedTipe = newValue;
+          });
+        }
+      },
     );
   }
 
